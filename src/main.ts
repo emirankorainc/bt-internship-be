@@ -3,7 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { execSync } from 'child_process';
 import { AppModule } from './app.module';
 import { AppConfigService } from 'config/service/appConfig.service';
-import { INestApplication, Logger, RequestMethod } from '@nestjs/common';
+import { INestApplication, Logger, RequestMethod, ValidationPipe } from '@nestjs/common';
 import { PrismaModule } from './prisma/prisma.module';
 
 // if (isFlagEnabled(FEATURE_FLAGS.DEV_DROP_DATABASE)) {
@@ -19,6 +19,7 @@ async function bootstrap() {
     rawBody: true,
   });
   const appConfig = app.get(AppConfigService);
+  app.useGlobalPipes(new ValidationPipe);
 
   app.enableCors({
     credentials: true,
