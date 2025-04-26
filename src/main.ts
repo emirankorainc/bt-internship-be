@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { execSync } from 'child_process';
 import { AppModule } from './app.module';
-import { AppConfigService } from 'config/service/appConfig.service';
+import { AppConfigService } from '../config/service/appConfig.service';
 import { INestApplication, Logger, RequestMethod, ValidationPipe } from '@nestjs/common';
 import { PrismaModule } from './prisma/prisma.module';
 

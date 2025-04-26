@@ -5,6 +5,8 @@ export const userSeedData = [
     password: '123ABcd.',
     firstName: 'John',
     lastName: 'Doe',
+    phoneNumber: '+38761234567',
+    dateOfBirth: new Date('2000-01-02T00:00:00.000Z'),
   },
 ];
 

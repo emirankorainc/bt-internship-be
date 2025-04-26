@@ -10,11 +10,30 @@ services:
       - 5432:5432
     volumes:
       - ./deployment/docker/docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
-    command: '-c log_statement=all'
+    command: "-c log_statement=all"
     networks:
       - bt-internship-be
     healthcheck:
-      test: ['CMD', 'pg_isready', '-h', 'postgres', '-U', 'root']
+      test: ["CMD", "pg_isready", "-h", "postgres", "-U", "root"]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+  postgres-test:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_DB: app_local
+      POSTGRES_PASSWORD: root
+    ports:
+      - 5433:5432
+    volumes:
+      - ./deployment/docker/docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+    command: "-c log_statement=all"
+    networks:
+      - bt-internship-be
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "postgres", "-U", "root"]
       interval: 1s
       timeout: 1s
       retries: 10
@@ -22,4 +41,3 @@ networks:
   bt-internship-be:
     driver: bridge
 
- 
