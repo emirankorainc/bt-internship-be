@@ -3,7 +3,7 @@ import { getSeedData } from './getSeedData';
 import { UserSeedData } from '../nonprod/userSeedData';
 
 export const seedUserData = async (prisma: Prisma.TransactionClient) => {
-  const seedData = getSeedData('Admin') as unknown as UserSeedData;
+  const seedData = getSeedData('User') as unknown as UserSeedData;
   const count = seedData.length;
   if (!count) {
     return;
