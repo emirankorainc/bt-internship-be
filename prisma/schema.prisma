@@ -36,5 +36,37 @@ model User {
   phoneNumber String
   dateOfBirth DateTime @db.Date
 
+  role   Role   @relation(fields: [roleId], references: [id])
+  roleId String
+
   @@map("users")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users       User[]
+  permissions Permission[] @relation("RolePermissions")
+
+  @@map("roles")
+}
+
+model Permission {
+  id         String   @id @default(uuid())
+  action     String
+  subject    String
+  conditions Json?
+  reason     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  roles Role[] @relation("RolePermissions")
+
+  @@unique([action, subject])
+  @@map("permissions")
 }

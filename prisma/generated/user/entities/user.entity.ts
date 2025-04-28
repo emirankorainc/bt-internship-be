@@ -1,5 +1,5 @@
 
-
+import {Role} from '../../role/entities/role.entity'
 
 
 export class User {
@@ -12,4 +12,6 @@ firstName: string ;
 lastName: string ;
 phoneNumber: string ;
 dateOfBirth: Date ;
+role?: Role ;
+roleId: string ;
 }

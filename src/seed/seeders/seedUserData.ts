@@ -10,13 +10,22 @@ export const seedUserData = async (prisma: Prisma.TransactionClient) => {
   }
   for (const data of seedData) {
     const user = await prisma.user.findFirst({
-      where: { id: data.id },
+      where: { email: data.email },
     });
 
     if (!user) {
-      await prisma.user.create({
-        data,
+      const userRole = await prisma.role.findFirst({
+        where: { isDefault: true },
       });
+
+      if (userRole) {
+        await prisma.user.create({
+          data: {
+            ...data,
+            roleId: userRole.id,
+          },
+        });
+      }
     } else {
       await prisma.user.update({
         where: {

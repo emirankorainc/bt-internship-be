@@ -1,6 +1,10 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { LoginDto, RegisterDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -11,11 +15,18 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
-  ) { }
+  ) {}
 
   async register(dto: RegisterDto) {
-
     try {
+      const defaultRole = await this.prisma.role.findFirst({
+        where: { isDefault: true },
+      });
+
+      if (!defaultRole) {
+        throw new NotFoundException('Default role is not found.');
+      }
+
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
@@ -24,6 +35,7 @@ export class AuthService {
           lastName: dto.lastName,
           phoneNumber: dto.phoneNumber,
           dateOfBirth: dto.dateOfBirth,
+          roleId: defaultRole.id,
         },
       });
 
@@ -45,30 +57,27 @@ export class AuthService {
       },
     });
 
-    if (!user) throw new ForbiddenException(
-      'Credentials incorrect',
-    );
+    if (!user) throw new ForbiddenException('Credentials incorrect');
 
-    if (dto.password !== user.password) throw new ForbiddenException(
-      'Credentials incorrect',
-    )
+    if (dto.password !== user.password)
+      throw new ForbiddenException('Credentials incorrect');
 
     return this.signToken(user.id, user.email);
   }
 
   async signToken(
     userId: string,
-    email: string
+    email: string,
   ): Promise<{ access_token: string }> {
     const payload = {
       sub: userId,
       email,
-    }
+    };
     const secret = this.config.get('JWT_SECRET');
     const token = await this.jwt.signAsync(payload, {
       expiresIn: '30min',
       secret,
-    })
+    });
 
     return {
       access_token: token,

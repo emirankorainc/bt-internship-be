@@ -32,12 +32,10 @@ describe('User (e2e)', () => {
 
   afterAll(async () => {
     await teardownE2ETest();
-  })
+  });
 
   it('should return 401 if user is not authenticated', async () => {
-    await request(app.getHttpServer())
-      .get('/user/current-user')
-      .expect(401);
+    await request(app.getHttpServer()).get('/user/current-user').expect(401);
   });
 
   it('should return current user with valid token', async () => {
@@ -63,4 +61,10 @@ describe('User (e2e)', () => {
       .expect(401);
   });
 
+  it('should return 403 forbidden access', async () => {
+    await request(app.getHttpServer())
+      .get('/user')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403);
+  });
 });
