@@ -1,5 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsEmail, IsNotEmpty, IsString, IsStrongPassword, Matches } from 'class-validator';
+import {
+  IsDate,
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  IsStrongPassword,
+  Matches,
+} from 'class-validator';
 
 export class RegisterDto {
   @IsEmail()
@@ -11,7 +18,7 @@ export class RegisterDto {
     minLowercase: 1,
     minUppercase: 1,
     minNumbers: 1,
-    minSymbols: 1
+    minSymbols: 1,
   })
   password: string;
 
@@ -21,7 +28,7 @@ export class RegisterDto {
     minLowercase: 1,
     minUppercase: 1,
     minNumbers: 1,
-    minSymbols: 1
+    minSymbols: 1,
   })
   confirmPassword: string;
 
@@ -34,7 +41,7 @@ export class RegisterDto {
   lastName: string;
 
   @IsNotEmpty()
-  @Matches(/^\+?[1-9]\d{1,14}$/, {
+  @Matches(/^\+?[0-9]\d{5,14}$/, {
     message: 'Phone number must be in valid international format (E.164)',
   })
   phoneNumber: string;

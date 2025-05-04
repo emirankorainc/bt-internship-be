@@ -3,8 +3,14 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { execSync } from 'child_process';
 import { AppModule } from './app.module';
 import { AppConfigService } from '../config/service/appConfig.service';
-import { INestApplication, Logger, RequestMethod, ValidationPipe } from '@nestjs/common';
+import {
+  INestApplication,
+  Logger,
+  RequestMethod,
+  ValidationPipe,
+} from '@nestjs/common';
 import { PrismaModule } from './prisma/prisma.module';
+import * as cookieParser from 'cookie-parser';
 
 // if (isFlagEnabled(FEATURE_FLAGS.DEV_DROP_DATABASE)) {
 //   console.log('*** Start:  Dropping the db ***');
@@ -19,7 +25,8 @@ async function bootstrap() {
     rawBody: true,
   });
   const appConfig = app.get(AppConfigService);
-  app.useGlobalPipes(new ValidationPipe);
+  app.useGlobalPipes(new ValidationPipe());
+  app.use(cookieParser());
 
   app.enableCors({
     credentials: true,
